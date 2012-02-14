@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Net;
 using TShockAPI;
@@ -138,5 +139,51 @@ namespace ExtendedBans
             return result;
         }
 
+        public static TimeSpan ParseTimeSpan(string s)
+        {
+            const string Quantity = "quantity";
+            const string Unit = "unit";
+
+            const string Days = @"(d(ays?)?)";
+            const string Hours = @"(h((ours?)|(rs?))?)";
+            const string Minutes = @"(m((inutes?)|(ins?))?)";
+            const string Seconds = @"(s((econds?)|(ecs?))?)";
+
+            Regex timeSpanRegex = new Regex(
+                string.Format(@"\s*(?<{0}>\d+)\s*(?<{1}>({2}|{3}|{4}|{5}|\Z))",
+                              Quantity, Unit, Days, Hours, Minutes, Seconds),
+                              RegexOptions.IgnoreCase);
+            MatchCollection matches = timeSpanRegex.Matches(s);
+            int l;
+            TimeSpan ts = new TimeSpan();
+            if (!Int32.TryParse(s.Substring(0, 1), out l))
+            {
+                return ts;
+            }
+            foreach (Match match in matches)
+            {
+                if (Regex.IsMatch(match.Groups[Unit].Value, @"\A" + Days))
+                {
+                    ts = ts.Add(TimeSpan.FromDays(double.Parse(match.Groups[Quantity].Value)));
+                }
+                else if (Regex.IsMatch(match.Groups[Unit].Value, Hours))
+                {
+                    ts = ts.Add(TimeSpan.FromHours(double.Parse(match.Groups[Quantity].Value)));
+                }
+                else if (Regex.IsMatch(match.Groups[Unit].Value, Minutes))
+                {
+                    ts = ts.Add(TimeSpan.FromMinutes(double.Parse(match.Groups[Quantity].Value)));
+                }
+                else if (Regex.IsMatch(match.Groups[Unit].Value, Seconds))
+                {
+                    ts = ts.Add(TimeSpan.FromSeconds(double.Parse(match.Groups[Quantity].Value)));
+                }
+                else
+                {
+                    ts = ts.Add(TimeSpan.FromMinutes(double.Parse(match.Groups[Quantity].Value)));
+                }
+            }
+            return ts;
+        }
     }
 }

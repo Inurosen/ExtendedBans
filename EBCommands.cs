@@ -32,12 +32,12 @@ namespace ExtendedBans
                 }
                 string IP = args.Parameters[0];
                 int BanDate = EBUtils.UnixTimestamp();
-                int mins;
                 bool permanent = false;
                 int UnbanDate;
-                if (System.Int32.TryParse(args.Parameters[1], out mins))
+                TimeSpan t = EBUtils.ParseTimeSpan(args.Parameters[1]);
+                if (t.TotalSeconds > 0)
                 {
-                    UnbanDate = BanDate + mins * 60;
+                    UnbanDate = BanDate + (int)t.TotalSeconds;
                 }
                 else
                 {
@@ -81,12 +81,12 @@ namespace ExtendedBans
                 }
                 string Player = args.Parameters[0];
                 int BanDate = EBUtils.UnixTimestamp();
-                int mins;
                 bool permanent = false;
                 int UnbanDate;
-                if (System.Int32.TryParse(args.Parameters[1], out mins))
+                TimeSpan t = EBUtils.ParseTimeSpan(args.Parameters[1]);
+                if (t.TotalSeconds > 0)
                 {
-                    UnbanDate = BanDate + mins * 60;
+                    UnbanDate = BanDate + (int)t.TotalSeconds;
                 }
                 else
                 {

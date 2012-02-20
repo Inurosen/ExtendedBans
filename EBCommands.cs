@@ -164,7 +164,7 @@ namespace ExtendedBans
                 }
                 int now = EBUtils.UnixTimestamp();
                 string Player = args.Parameters[0];
-                EBData.DB.Query("UPDATE BannedPlayer SET UnbanDate = " + now + " WHERE Player = '" + Player + "' AND (UnbanDate>" + now + " OR UnbanDate = 0)");
+                EBData.DB.Query("UPDATE BannedPlayer SET UnbanDate = " + now + " WHERE LOWER(Player) = '" + Player.ToLower() + "' AND (UnbanDate>" + now + " OR UnbanDate = 0)");
                 EBData.DB.Dispose();
                 args.Player.SendMessage(Player + " has been unbanned.", Color.Yellow);
             }

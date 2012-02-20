@@ -77,7 +77,7 @@ namespace ExtendedBans
             var DBQuery = EBData.DB.QueryReader("SELECT Player FROM BannedPlayer WHERE Player = '" + plName + "' AND (UnbanDate>" + now + " OR UnbanDate = 0)");
             while (DBQuery.Read())
             {
-                if (plName == DBQuery.Reader.Get<string>("Player"))
+                if (plName.ToLower() == DBQuery.Reader.Get<string>("Player").ToLower())
                 {
                     yes = true;
                     break;
@@ -95,7 +95,7 @@ namespace ExtendedBans
             while (DBQuery.Read())
             {
                 string plBanned = DBQuery.Reader.Get<string>("Player");
-                if (plBanned == plName)
+                if (plBanned.ToLower() == plName.ToLower())
                 {
                     baninfo[0] = "banned";
                     baninfo[1] = DBQuery.Reader.Get<string>("Player");

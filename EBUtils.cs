@@ -74,7 +74,7 @@ namespace ExtendedBans
         {
             bool yes = false;
             int now = UnixTimestamp();
-            var DBQuery = EBData.DB.QueryReader("SELECT Player FROM BannedPlayer WHERE Player = '" + plName + "' AND (UnbanDate>" + now + " OR UnbanDate = 0)");
+            var DBQuery = EBData.DB.QueryReader("SELECT Player FROM BannedPlayer WHERE LOWER(Player) = '" + plName.ToLower() + "' AND (UnbanDate>" + now + " OR UnbanDate = 0)");
             while (DBQuery.Read())
             {
                 if (plName.ToLower() == DBQuery.Reader.Get<string>("Player").ToLower())
@@ -185,5 +185,23 @@ namespace ExtendedBans
             }
             return ts;
         }
+
+        public static bool IsPlayerMuted(string plName)
+        {
+            bool yes = false;
+            int now = UnixTimestamp();
+            var DBQuery = EBData.DB.QueryReader("SELECT Player FROM MutedPlayer WHERE LOWER(Player) = '" + plName.ToLower() + "' AND (UnmuteDate>" + now + " OR UnmuteDate = 0)");
+            while (DBQuery.Read())
+            {
+                if (plName.ToLower() == DBQuery.Reader.Get<string>("Player").ToLower())
+                {
+                    yes = true;
+                    break;
+                }
+            }
+            DBQuery.Connection.Dispose();
+            return yes;
+        }
+
     }
 }

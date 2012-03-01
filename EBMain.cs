@@ -17,6 +17,7 @@ namespace ExtendedBans
         public ExtendedBans(Main game)
             : base(game)
 		{
+            Order = -1;
 		}
 		public override void Initialize()
 		{
@@ -28,6 +29,7 @@ namespace ExtendedBans
             Hooks.ServerHooks.Connect += OnConnect;
             Hooks.ServerHooks.Join += OnJoin;
             Hooks.ServerHooks.Leave += OnLeave;
+            Hooks.ServerHooks.Chat += OnChat;
 		}
         protected override void Dispose(bool disposing)
         {
@@ -37,12 +39,13 @@ namespace ExtendedBans
                 Hooks.ServerHooks.Connect -= OnConnect;
                 Hooks.ServerHooks.Join -= OnJoin;
                 Hooks.ServerHooks.Leave -= OnLeave;
+                Hooks.ServerHooks.Chat -= OnChat;
             }
             base.Dispose(disposing);
         }
         public override Version Version
 		{
-			get { return new Version("1.0.0214"); }
+			get { return new Version("1.1.0301"); }
 		}
 		public override string Name
 		{
@@ -54,7 +57,7 @@ namespace ExtendedBans
 		}
 		public override string Description
 		{
-			get { return "Extended bans system."; }
+			get { return "Extended bans and mute system."; }
 		}
 
         private void OnConnect(int ply, HandledEventArgs e)
@@ -112,6 +115,18 @@ namespace ExtendedBans
                         EBPlayers.RemoveAt(i);
                         break;
                     }
+                }
+            }
+        }
+
+        void OnChat(messageBuffer msg, int ply, string text, HandledEventArgs e)
+        {
+            if (!text.StartsWith("/"))
+            {
+                TSPlayer plr = TShock.Players[msg.whoAmI];
+                if(EBUtils.IsPlayerMuted(plr.Name)) {
+                    plr.SendMessage("You are muted!", Color.Red);
+                    e.Handled = true;
                 }
             }
         }

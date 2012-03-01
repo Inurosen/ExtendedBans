@@ -19,7 +19,12 @@ namespace ExtendedBans
             List<EBPlayer> players = new List<EBPlayer>();
             foreach (EBPlayer plrs in ExtendedBans.EBPlayers)
             {
-                if (plrs.TSPlayer.Name.ToLower() == plrName.ToLower())
+                if(plrs.TSPlayer.Name.ToLower() == plrName.ToLower()) {
+                    players.Clear();
+                    players.Add(plrs);
+                    break;
+                }
+                else if(plrs.TSPlayer.Name.ToLower().Contains(plrName.ToLower()))
                 {
                     players.Add(plrs);
                 }

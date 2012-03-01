@@ -37,6 +37,14 @@ namespace ExtendedBans
             new SqlColumn("Reason", MySqlDbType.Text)
             );
             SQLWriter.EnsureExists(table);
+            table = new SqlTable("MutedPlayer",
+            new SqlColumn("Player", MySqlDbType.Text) { Unique = true },
+            new SqlColumn("MuteDate", MySqlDbType.Int32),
+            new SqlColumn("UnmuteDate", MySqlDbType.Int32),
+            new SqlColumn("MutedBy", MySqlDbType.Text),
+            new SqlColumn("Reason", MySqlDbType.Text)
+);
+            SQLWriter.EnsureExists(table);
         }
     }
 }

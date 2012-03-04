@@ -2,6 +2,7 @@
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Net;
+using System.Data;
 using TShockAPI;
 using TShockAPI.DB;
 
@@ -24,10 +25,18 @@ namespace ExtendedBans
             }
             int now = UnixTimestamp();
             string[] ipnets = ip.Split('.');
-            var DBQuery = EBData.DB.QueryReader("SELECT * FROM BannedIP WHERE UnbanDate>" + now + " OR UnbanDate = 0");
+            IDataReader DBQuery;
+            if (EBConfig.UseMysql)
+            {
+               DBQuery = EBData.RunMysqlQuery("SELECT * FROM BannedIP WHERE UnbanDate>" + now + " OR UnbanDate = 0");
+            }
+            else
+            {
+                DBQuery = EBData.DBSqlite.QueryReader("SELECT * FROM BannedIP WHERE UnbanDate>" + now + " OR UnbanDate = 0").Reader;
+            }
             while (DBQuery.Read())
             {
-                string ipban = DBQuery.Reader.Get<string>("IP");
+                string ipban = DBQuery.Get<string>("IP");
                 string[] nets = ipban.Split('.');
                 if (nets[0] == ipnets[0] || nets[0] == "*")
                 {
@@ -38,18 +47,19 @@ namespace ExtendedBans
                             if (nets[3] == ipnets[3] || nets[3] == "*")
                             {
                                 baninfo[0] = "banned";
-                                baninfo[1] = DBQuery.Reader.Get<string>("IP");
-                                baninfo[2] = DBQuery.Reader.Get<int>("BanDate").ToString();
-                                baninfo[3] = DBQuery.Reader.Get<int>("UnbanDate").ToString();
-                                baninfo[4] = DBQuery.Reader.Get<string>("BannedBy");
-                                baninfo[5] = DBQuery.Reader.Get<string>("Reason");
+                                baninfo[1] = DBQuery.Get<string>("IP");
+                                baninfo[2] = DBQuery.Get<int>("BanDate").ToString();
+                                baninfo[3] = DBQuery.Get<int>("UnbanDate").ToString();
+                                baninfo[4] = DBQuery.Get<string>("BannedBy");
+                                baninfo[5] = DBQuery.Get<string>("Reason");
                                 break;
                             }
                         }
                     }
                 }
             }
-            DBQuery.Connection.Dispose();
+            if (!EBConfig.UseMysql) { EBData.DBSqlite.Dispose(); } else { EBData.DBMysql.Close(); }
+            DBQuery.Dispose();
             return baninfo;
         }
 
@@ -57,16 +67,25 @@ namespace ExtendedBans
         {
             bool yes = false;
             int now = UnixTimestamp();
-            var DBQuery = EBData.DB.QueryReader("SELECT IP FROM BannedIP WHERE IP = '" + ip + "' AND (UnbanDate>" + now + " OR UnbanDate = 0)");
+            IDataReader DBQuery;
+            if (EBConfig.UseMysql)
+            {
+                DBQuery = EBData.RunMysqlQuery("SELECT IP FROM BannedIP WHERE IP = '" + ip + "' AND (UnbanDate>" + now + " OR UnbanDate = 0)");
+            }
+            else
+            {
+                DBQuery = EBData.DBSqlite.QueryReader("SELECT IP FROM BannedIP WHERE IP = '" + ip + "' AND (UnbanDate>" + now + " OR UnbanDate = 0)").Reader;
+            } 
             while(DBQuery.Read())
             {
-                if (ip == DBQuery.Reader.Get<string>("IP"))
+                if (ip == DBQuery.Get<string>("IP"))
                 {
                     yes = true;
                     break;
                 }
             }
-            DBQuery.Connection.Dispose();
+            if (!EBConfig.UseMysql) { EBData.DBSqlite.Dispose(); } else { EBData.DBMysql.Close(); }
+            DBQuery.Dispose();
             return yes;
         }
 
@@ -74,16 +93,25 @@ namespace ExtendedBans
         {
             bool yes = false;
             int now = UnixTimestamp();
-            var DBQuery = EBData.DB.QueryReader("SELECT Player FROM BannedPlayer WHERE LOWER(Player) = '" + plName.ToLower() + "' AND (UnbanDate>" + now + " OR UnbanDate = 0)");
+            IDataReader DBQuery;
+            if (EBConfig.UseMysql)
+            {
+                DBQuery = EBData.RunMysqlQuery("SELECT Player FROM BannedPlayer WHERE LOWER(Player) = '" + plName.ToLower() + "' AND (UnbanDate>" + now + " OR UnbanDate = 0)");
+            }
+            else
+            {
+                DBQuery = EBData.DBSqlite.QueryReader("SELECT Player FROM BannedPlayer WHERE LOWER(Player) = '" + plName.ToLower() + "' AND (UnbanDate>" + now + " OR UnbanDate = 0)").Reader;
+            }
             while (DBQuery.Read())
             {
-                if (plName.ToLower() == DBQuery.Reader.Get<string>("Player").ToLower())
+                if (plName.ToLower() == DBQuery.Get<string>("Player").ToLower())
                 {
                     yes = true;
                     break;
                 }
             }
-            DBQuery.Connection.Dispose();
+            if (!EBConfig.UseMysql) { EBData.DBSqlite.Dispose(); } else { EBData.DBMysql.Close(); }
+            DBQuery.Dispose();
             return yes;
         }
 
@@ -91,23 +119,32 @@ namespace ExtendedBans
         {
             string[] baninfo = new string[6];
             int now = UnixTimestamp();
-            var DBQuery = EBData.DB.QueryReader("SELECT * FROM BannedPlayer WHERE UnbanDate>" + now + " OR UnbanDate = 0");
+            IDataReader DBQuery;
+            if (EBConfig.UseMysql)
+            {
+                DBQuery = EBData.RunMysqlQuery("SELECT * FROM BannedPlayer WHERE UnbanDate>" + now + " OR UnbanDate = 0");
+            }
+            else
+            {
+                DBQuery = EBData.DBSqlite.QueryReader("SELECT * FROM BannedPlayer WHERE UnbanDate>" + now + " OR UnbanDate = 0").Reader;
+            }
             while (DBQuery.Read())
             {
-                string plBanned = DBQuery.Reader.Get<string>("Player");
+                string plBanned = DBQuery.Get<string>("Player");
                 if (plBanned.ToLower() == plName.ToLower())
                 {
                     baninfo[0] = "banned";
-                    baninfo[1] = DBQuery.Reader.Get<string>("Player");
-                    baninfo[2] = DBQuery.Reader.Get<int>("BanDate").ToString();
-                    baninfo[3] = DBQuery.Reader.Get<int>("UnbanDate").ToString();
-                    baninfo[4] = DBQuery.Reader.Get<string>("BannedBy");
-                    baninfo[5] = DBQuery.Reader.Get<string>("Reason");
+                    baninfo[1] = DBQuery.Get<string>("Player");
+                    baninfo[2] = DBQuery.Get<int>("BanDate").ToString();
+                    baninfo[3] = DBQuery.Get<int>("UnbanDate").ToString();
+                    baninfo[4] = DBQuery.Get<string>("BannedBy");
+                    baninfo[5] = DBQuery.Get<string>("Reason");
                     break;
                            
                 }
             }
-            DBQuery.Connection.Dispose();
+            if (!EBConfig.UseMysql) { EBData.DBSqlite.Dispose(); } else { EBData.DBMysql.Close(); }
+            DBQuery.Dispose();
             return baninfo;
         }
 
@@ -190,16 +227,25 @@ namespace ExtendedBans
         {
             bool yes = false;
             int now = UnixTimestamp();
-            var DBQuery = EBData.DB.QueryReader("SELECT Player FROM MutedPlayer WHERE LOWER(Player) = '" + plName.ToLower() + "' AND (UnmuteDate>" + now + " OR UnmuteDate = 0)");
+            IDataReader DBQuery;
+            if (EBConfig.UseMysql)
+            {
+                DBQuery = EBData.RunMysqlQuery("SELECT Player FROM MutedPlayer WHERE LOWER(Player) = '" + plName.ToLower() + "' AND (UnmuteDate>" + now + " OR UnmuteDate = 0)");
+            }
+            else
+            {
+                DBQuery = EBData.DBSqlite.QueryReader("SELECT Player FROM MutedPlayer WHERE LOWER(Player) = '" + plName.ToLower() + "' AND (UnmuteDate>" + now + " OR UnmuteDate = 0)").Reader;
+            }
             while (DBQuery.Read())
             {
-                if (plName.ToLower() == DBQuery.Reader.Get<string>("Player").ToLower())
+                if (plName.ToLower() == DBQuery.Get<string>("Player").ToLower())
                 {
                     yes = true;
                     break;
                 }
             }
-            DBQuery.Connection.Dispose();
+            if (!EBConfig.UseMysql) { EBData.DBSqlite.Dispose(); } else { EBData.DBMysql.Close(); }
+            DBQuery.Dispose();
             return yes;
         }
 

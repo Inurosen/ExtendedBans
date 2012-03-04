@@ -52,8 +52,7 @@ namespace ExtendedBans
                 {
                     Reason = "No reason.";
                 }
-                EBData.DB.QueryReader("INSERT INTO BannedIP (IP, BanDate, UnbanDate, BannedBy, Reason) VALUES ('" + IP + "', '" + BanDate + "', '" + UnbanDate + "', '" + BannedBy + "', '" + Reason + "')");
-                EBData.DB.Dispose(); 
+                EBData.RunExec("INSERT INTO BannedIP (IP, BanDate, UnbanDate, BannedBy, Reason) VALUES ('" + IP + "', '" + BanDate + "', '" + UnbanDate + "', '" + BannedBy + "', '" + Reason + "')");
                 List<EBPlayer> plrs = EBPlayer.GetPlayersByIPMask(IP);
                 foreach (EBPlayer plr in plrs)
                 {
@@ -113,9 +112,8 @@ namespace ExtendedBans
                 {
                     Reason = "No reason.";
                 }
-                EBData.DB.QueryReader("INSERT INTO BannedPlayer (Player, BanDate, UnbanDate, BannedBy, Reason) VALUES ('" + Player + "', '" + BanDate + "', '" + UnbanDate + "', '" + BannedBy + "', '" + Reason + "')");
-                EBData.DB.Dispose();
-                TShock.Utils.ForceKick(plrs[0].TSPlayer, "You have been banned: " + Reason);
+                EBData.RunExec("INSERT INTO BannedPlayer (Player, BanDate, UnbanDate, BannedBy, Reason) VALUES ('" + Player + "', '" + BanDate + "', '" + UnbanDate + "', '" + BannedBy + "', '" + Reason + "')");
+                if(plrs.Count > 0) TShock.Utils.ForceKick(plrs[0].TSPlayer, "You have been banned: " + Reason);
                 args.Player.SendMessage(Player + " has been banned!", Color.Yellow);
             }
             else
@@ -149,8 +147,7 @@ namespace ExtendedBans
                 }
                 int now = EBUtils.UnixTimestamp();
                 string IP = args.Parameters[0];
-                EBData.DB.Query("UPDATE BannedIP SET UnbanDate = " + now + " WHERE IP = '" + IP + "' AND (UnbanDate>" + now + " OR UnbanDate = 0)");
-                EBData.DB.Dispose();
+                EBData.RunExec("UPDATE BannedIP SET UnbanDate = " + now + " WHERE IP = '" + IP + "' AND (UnbanDate>" + now + " OR UnbanDate = 0)");
                 args.Player.SendMessage(IP + " has been unbanned.", Color.Yellow);
             }
             else
@@ -174,8 +171,7 @@ namespace ExtendedBans
                 }
                 int now = EBUtils.UnixTimestamp();
                 string Player = args.Parameters[0];
-                EBData.DB.Query("UPDATE BannedPlayer SET UnbanDate = " + now + " WHERE LOWER(Player) = '" + Player.ToLower() + "' AND (UnbanDate>" + now + " OR UnbanDate = 0)");
-                EBData.DB.Dispose();
+                EBData.RunExec("UPDATE BannedPlayer SET UnbanDate = " + now + " WHERE LOWER(Player) = '" + Player.ToLower() + "' AND (UnbanDate>" + now + " OR UnbanDate = 0)");
                 args.Player.SendMessage(Player + " has been unbanned.", Color.Yellow);
             }
             else
@@ -232,9 +228,8 @@ namespace ExtendedBans
                     Reason = "No reason.";
                 }
 
-                EBData.DB.QueryReader("INSERT INTO MutedPlayer (Player, MuteDate, UnmuteDate, MutedBy, Reason) VALUES ('" + Player + "', '" + MuteDate + "', '" + UnmuteDate + "', '" + MutedBy + "', '" + Reason + "')");
-                EBData.DB.Dispose();
-                plrs[0].TSPlayer.SendMessage("You have been muted: " + Reason, Color.Yellow);
+                EBData.RunExec("INSERT INTO MutedPlayer (Player, MuteDate, UnmuteDate, MutedBy, Reason) VALUES ('" + Player + "', '" + MuteDate + "', '" + UnmuteDate + "', '" + MutedBy + "', '" + Reason + "')");
+                if (plrs.Count > 0) plrs[0].TSPlayer.SendMessage("You have been muted: " + Reason, Color.Yellow);
                 args.Player.SendMessage(Player + " has been muted!.", Color.Yellow);
             }
             else
@@ -269,9 +264,8 @@ namespace ExtendedBans
                     return;
                 }
                 int now = EBUtils.UnixTimestamp();
-                EBData.DB.Query("UPDATE MutedPlayer SET UnmuteDate = " + now + " WHERE LOWER(Player) = '" + Player.ToLower() + "' AND (UnmuteDate>" + now + " OR UnmuteDate = 0)");
-                EBData.DB.Dispose();
-                plrs[0].TSPlayer.SendMessage("You have been unmuted.", Color.Yellow);
+                EBData.RunExec("UPDATE MutedPlayer SET UnmuteDate = " + now + " WHERE LOWER(Player) = '" + Player.ToLower() + "' AND (UnmuteDate>" + now + " OR UnmuteDate = 0)");
+                if (plrs.Count > 0) plrs[0].TSPlayer.SendMessage("You have been unmuted.", Color.Yellow);
                 args.Player.SendMessage(Player + " has been unmuted.", Color.Yellow);
             }
             else

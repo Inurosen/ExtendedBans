@@ -13,7 +13,8 @@ namespace ExtendedBans
         public static string SavePath = "tshock";
         public static string EBDir = Path.Combine(SavePath, "extendedbans");
         public static List<EBPlayer> EBPlayers = new List<EBPlayer>();
-        
+        bool InitConfig = false;
+        public static EBConfigFile Cfg = new EBConfigFile();
         public ExtendedBans(Main game)
             : base(game)
 		{
@@ -23,33 +24,48 @@ namespace ExtendedBans
 		{
             if (!Directory.Exists(EBDir))
                 Directory.CreateDirectory(EBDir);
-            EBData.InitXBansDB();
-			EBCommands.Load();
-            Hooks.NetHooks.GreetPlayer += OnGreetPlayer;
-            Hooks.ServerHooks.Connect += OnConnect;
-            Hooks.ServerHooks.Join += OnJoin;
-            Hooks.ServerHooks.Leave += OnLeave;
-            Hooks.ServerHooks.Chat += OnChat;
+            if (Cfg.Load())
+            {
+                EBConfig.UseMysql = bool.Parse(Cfg["usemysql"]);
+                EBConfig.MysqlHost = Cfg["mysqlhost"];
+                EBConfig.MysqlLogin = Cfg["mysqllogin"];
+                EBConfig.MysqlPassword = Cfg["mysqlpassword"];
+                EBConfig.MysqlDatabase = Cfg["mysqldatabase"];
+                InitConfig = true;
+            }
+            if (InitConfig)
+            {
+                EBData.InitXBansDB();
+                EBCommands.Load();
+                Hooks.NetHooks.GreetPlayer += OnGreetPlayer;
+                Hooks.ServerHooks.Connect += OnConnect;
+                Hooks.ServerHooks.Join += OnJoin;
+                Hooks.ServerHooks.Leave += OnLeave;
+                Hooks.ServerHooks.Chat += OnChat;
+            }
 		}
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                Hooks.NetHooks.GreetPlayer -= OnGreetPlayer;
-                Hooks.ServerHooks.Connect -= OnConnect;
-                Hooks.ServerHooks.Join -= OnJoin;
-                Hooks.ServerHooks.Leave -= OnLeave;
-                Hooks.ServerHooks.Chat -= OnChat;
+                if (InitConfig)
+                {
+                    Hooks.NetHooks.GreetPlayer -= OnGreetPlayer;
+                    Hooks.ServerHooks.Connect -= OnConnect;
+                    Hooks.ServerHooks.Join -= OnJoin;
+                    Hooks.ServerHooks.Leave -= OnLeave;
+                    Hooks.ServerHooks.Chat -= OnChat;
+                }
             }
             base.Dispose(disposing);
         }
         public override Version Version
 		{
-			get { return new Version("1.1.0301"); }
+			get { return new Version("1.2.0304"); }
 		}
 		public override string Name
 		{
-			get { return "Extended Bans"; }
+			get { return "ExtendedBans"; }
 		}
 		public override string Author
 		{

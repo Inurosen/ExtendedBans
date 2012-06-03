@@ -61,7 +61,7 @@ namespace ExtendedBans
         }
         public override Version Version
 		{
-			get { return new Version("1.2.0304"); }
+			get { return new Version("1.3.0603"); }
 		}
 		public override string Name
 		{

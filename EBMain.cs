@@ -89,7 +89,7 @@ namespace ExtendedBans
 
             if (ban[0] == "banned")
             {
-                TShock.Utils.ForceKick(player, string.Format("You are banned: {0}", ban[5]));
+                TShock.Utils.Kick(player, string.Format("You are banned: {0}", ban[5]), true, true, null, true);
                 e.Handled = true;
                 return;
             }
@@ -108,7 +108,7 @@ namespace ExtendedBans
 
             if (ban[0] == "banned")
             {
-                TShock.Utils.ForceKick(player, string.Format("You are banned: {0}", ban[5]));
+                TShock.Utils.Kick(player, string.Format("You are banned: {0}", ban[5]), true, true, null, true);
                 e.Handled = true;
                 return;
             }

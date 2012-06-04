@@ -56,7 +56,7 @@ namespace ExtendedBans
                 List<EBPlayer> plrs = EBPlayer.GetPlayersByIPMask(IP);
                 foreach (EBPlayer plr in plrs)
                 {
-                    TShock.Utils.ForceKick(plr.TSPlayer, "You have been banned: " + Reason);
+                    TShock.Utils.Kick(plr.TSPlayer, "You have been banned: " + Reason, false, false, args.Player.Name, true);
                 }
                 args.Player.SendMessage(IP + " has been banned!.", Color.Yellow);
             }
@@ -113,7 +113,7 @@ namespace ExtendedBans
                     Reason = "No reason.";
                 }
                 EBData.RunExec("INSERT INTO BannedPlayer (Player, BanDate, UnbanDate, BannedBy, Reason) VALUES ('" + Player + "', '" + BanDate + "', '" + UnbanDate + "', '" + BannedBy + "', '" + Reason + "')");
-                if(plrs.Count > 0) TShock.Utils.ForceKick(plrs[0].TSPlayer, "You have been banned: " + Reason);
+                if(plrs.Count > 0) TShock.Utils.Kick(plrs[0].TSPlayer, "You have been banned: " + Reason, false, false, args.Player.Name, true);
                 args.Player.SendMessage(Player + " has been banned!", Color.Yellow);
             }
             else

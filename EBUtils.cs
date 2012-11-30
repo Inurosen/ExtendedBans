@@ -28,11 +28,11 @@ namespace ExtendedBans
             IDataReader DBQuery;
             if (EBConfig.UseMysql)
             {
-               DBQuery = EBData.RunMysqlQuery("SELECT * FROM BannedIP WHERE UnbanDate>" + now + " OR UnbanDate = 0");
+                DBQuery = EBData.DBMysql.QueryReader("SELECT * FROM BannedIP WHERE UnbanDate>@0 OR UnbanDate = 0", now).Reader;
             }
             else
             {
-                DBQuery = EBData.DBSqlite.QueryReader("SELECT * FROM BannedIP WHERE UnbanDate>" + now + " OR UnbanDate = 0").Reader;
+                DBQuery = EBData.DBSqlite.QueryReader("SELECT * FROM BannedIP WHERE UnbanDate>@0 OR UnbanDate = 0", now).Reader;
             }
             while (DBQuery.Read())
             {
@@ -70,11 +70,11 @@ namespace ExtendedBans
             IDataReader DBQuery;
             if (EBConfig.UseMysql)
             {
-                DBQuery = EBData.RunMysqlQuery("SELECT IP FROM BannedIP WHERE IP = '" + ip + "' AND (UnbanDate>" + now + " OR UnbanDate = 0)");
+                DBQuery = EBData.DBMysql.QueryReader("SELECT IP FROM BannedIP WHERE IP = @0 AND (UnbanDate>@1 OR UnbanDate = 0)", ip, now).Reader;
             }
             else
             {
-                DBQuery = EBData.DBSqlite.QueryReader("SELECT IP FROM BannedIP WHERE IP = '" + ip + "' AND (UnbanDate>" + now + " OR UnbanDate = 0)").Reader;
+                DBQuery = EBData.DBSqlite.QueryReader("SELECT IP FROM BannedIP WHERE IP = @0 AND (UnbanDate>@1 OR UnbanDate = 0)", ip, now).Reader;
             } 
             while(DBQuery.Read())
             {
@@ -96,11 +96,11 @@ namespace ExtendedBans
             IDataReader DBQuery;
             if (EBConfig.UseMysql)
             {
-                DBQuery = EBData.RunMysqlQuery("SELECT Player FROM BannedPlayer WHERE LOWER(Player) = '" + plName.ToLower() + "' AND (UnbanDate>" + now + " OR UnbanDate = 0)");
+                DBQuery = EBData.DBMysql.QueryReader("SELECT Player FROM BannedPlayer WHERE LOWER(Player) = @0 AND (UnbanDate>@1 OR UnbanDate = 0)", plName.ToLower(), now).Reader;
             }
             else
             {
-                DBQuery = EBData.DBSqlite.QueryReader("SELECT Player FROM BannedPlayer WHERE LOWER(Player) = '" + plName.ToLower() + "' AND (UnbanDate>" + now + " OR UnbanDate = 0)").Reader;
+                DBQuery = EBData.DBSqlite.QueryReader("SELECT Player FROM BannedPlayer WHERE LOWER(Player) = @0 AND (UnbanDate>@1 OR UnbanDate = 0)", plName.ToLower(), now).Reader;
             }
             while (DBQuery.Read())
             {
@@ -122,11 +122,11 @@ namespace ExtendedBans
             IDataReader DBQuery;
             if (EBConfig.UseMysql)
             {
-                DBQuery = EBData.RunMysqlQuery("SELECT * FROM BannedPlayer WHERE UnbanDate>" + now + " OR UnbanDate = 0");
+                DBQuery = EBData.DBMysql.QueryReader("SELECT * FROM BannedPlayer WHERE UnbanDate>@0 OR UnbanDate = 0", now).Reader;
             }
             else
             {
-                DBQuery = EBData.DBSqlite.QueryReader("SELECT * FROM BannedPlayer WHERE UnbanDate>" + now + " OR UnbanDate = 0").Reader;
+                DBQuery = EBData.DBSqlite.QueryReader("SELECT * FROM BannedPlayer WHERE UnbanDate>@0 OR UnbanDate = 0", now).Reader;
             }
             while (DBQuery.Read())
             {
@@ -230,11 +230,11 @@ namespace ExtendedBans
             IDataReader DBQuery;
             if (EBConfig.UseMysql)
             {
-                DBQuery = EBData.RunMysqlQuery("SELECT Player FROM MutedPlayer WHERE LOWER(Player) = '" + plName.ToLower() + "' AND (UnmuteDate>" + now + " OR UnmuteDate = 0)");
+                DBQuery = EBData.DBMysql.QueryReader("SELECT Player FROM MutedPlayer WHERE LOWER(Player) = @0 AND (UnmuteDate>@1 OR UnmuteDate = 0)", plName.ToLower(), now).Reader;
             }
             else
             {
-                DBQuery = EBData.DBSqlite.QueryReader("SELECT Player FROM MutedPlayer WHERE LOWER(Player) = '" + plName.ToLower() + "' AND (UnmuteDate>" + now + " OR UnmuteDate = 0)").Reader;
+                DBQuery = EBData.DBSqlite.QueryReader("SELECT Player FROM MutedPlayer WHERE LOWER(Player) = @0 AND (UnmuteDate>@1 OR UnmuteDate = 0)", plName.ToLower(), now).Reader;
             }
             while (DBQuery.Read())
             {

@@ -52,7 +52,14 @@ namespace ExtendedBans
                 {
                     Reason = "No reason.";
                 }
-                EBData.RunExec("INSERT INTO BannedIP (IP, BanDate, UnbanDate, BannedBy, Reason) VALUES ('" + IP + "', '" + BanDate + "', '" + UnbanDate + "', '" + BannedBy + "', '" + Reason + "')");
+                if (EBConfig.UseMysql)
+                {
+                    EBData.DBMysql.Query("INSERT INTO BannedIP (IP, BanDate, UnbanDate, BannedBy, Reason) VALUES (@0, @1, @2, @3, @4)", IP, BanDate, UnbanDate, BannedBy, Reason);
+                }
+                else
+                {
+                    EBData.DBSqlite.Query("INSERT INTO BannedIP (IP, BanDate, UnbanDate, BannedBy, Reason) VALUES (@0, @1, @2, @3, @4)", IP, BanDate, UnbanDate, BannedBy, Reason);
+                }
                 List<EBPlayer> plrs = EBPlayer.GetPlayersByIPMask(IP);
                 foreach (EBPlayer plr in plrs)
                 {
@@ -112,7 +119,14 @@ namespace ExtendedBans
                 {
                     Reason = "No reason.";
                 }
-                EBData.RunExec("INSERT INTO BannedPlayer (Player, BanDate, UnbanDate, BannedBy, Reason) VALUES ('" + Player + "', '" + BanDate + "', '" + UnbanDate + "', '" + BannedBy + "', '" + Reason + "')");
+                if (EBConfig.UseMysql)
+                {
+                    EBData.DBMysql.Query("INSERT INTO BannedPlayer (Player, BanDate, UnbanDate, BannedBy, Reason) VALUES (@0, @1, @2, @3, @4)", Player, BanDate, UnbanDate, BannedBy, Reason);
+                }
+                else
+                {
+                    EBData.DBSqlite.Query("INSERT INTO BannedPlayer (Player, BanDate, UnbanDate, BannedBy, Reason) VALUES (@0, @1, @2, @3, @4)", Player, BanDate, UnbanDate, BannedBy, Reason);
+                }
                 if(plrs.Count > 0) TShock.Utils.Kick(plrs[0].TSPlayer, "You have been banned: " + Reason, false, false, args.Player.Name, true);
                 args.Player.SendMessage(Player + " has been banned!", Color.Yellow);
             }
@@ -147,7 +161,14 @@ namespace ExtendedBans
                 }
                 int now = EBUtils.UnixTimestamp();
                 string IP = args.Parameters[0];
-                EBData.RunExec("UPDATE BannedIP SET UnbanDate = " + now + " WHERE IP = '" + IP + "' AND (UnbanDate>" + now + " OR UnbanDate = 0)");
+                if (EBConfig.UseMysql)
+                {
+                    EBData.DBMysql.Query("UPDATE BannedIP SET UnbanDate = @0 WHERE IP = @1 AND (UnbanDate>@0 OR UnbanDate = 0)", now, IP);
+                }
+                else
+                {
+                    EBData.DBSqlite.Query("UPDATE BannedIP SET UnbanDate = @0 WHERE IP = @1 AND (UnbanDate>@0 OR UnbanDate = 0)", now, IP);
+                }
                 args.Player.SendMessage(IP + " has been unbanned.", Color.Yellow);
             }
             else
@@ -171,7 +192,14 @@ namespace ExtendedBans
                 }
                 int now = EBUtils.UnixTimestamp();
                 string Player = args.Parameters[0];
-                EBData.RunExec("UPDATE BannedPlayer SET UnbanDate = " + now + " WHERE LOWER(Player) = '" + Player.ToLower() + "' AND (UnbanDate>" + now + " OR UnbanDate = 0)");
+                if (EBConfig.UseMysql)
+                {
+                    EBData.DBMysql.Query("UPDATE BannedPlayer SET UnbanDate = @0 WHERE LOWER(Player) = @1 AND (UnbanDate>@0 OR UnbanDate = 0)", now, Player.ToLower());
+                }
+                else
+                {
+                    EBData.DBSqlite.Query("UPDATE BannedPlayer SET UnbanDate = @0 WHERE LOWER(Player) = @1 AND (UnbanDate>@0 OR UnbanDate = 0)", now, Player.ToLower());
+                }
                 args.Player.SendMessage(Player + " has been unbanned.", Color.Yellow);
             }
             else
@@ -228,7 +256,14 @@ namespace ExtendedBans
                     Reason = "No reason.";
                 }
 
-                EBData.RunExec("INSERT INTO MutedPlayer (Player, MuteDate, UnmuteDate, MutedBy, Reason) VALUES ('" + Player + "', '" + MuteDate + "', '" + UnmuteDate + "', '" + MutedBy + "', '" + Reason + "')");
+                if (EBConfig.UseMysql)
+                {
+                    EBData.DBMysql.Query("INSERT INTO MutedPlayer (Player, MuteDate, UnmuteDate, MutedBy, Reason) VALUES (@0, @1, @2, @3, @4)", Player, MuteDate, UnmuteDate, MutedBy, Reason);
+                }
+                else
+                {
+                    EBData.DBSqlite.Query("INSERT INTO MutedPlayer (Player, MuteDate, UnmuteDate, MutedBy, Reason) VALUES (@0, @1, @2, @3, @4)", Player, MuteDate, UnmuteDate, MutedBy, Reason);
+                }
                 if (plrs.Count > 0) plrs[0].TSPlayer.SendMessage("You have been muted: " + Reason, Color.Yellow);
                 args.Player.SendMessage(Player + " has been muted!.", Color.Yellow);
             }
@@ -264,7 +299,14 @@ namespace ExtendedBans
                     return;
                 }
                 int now = EBUtils.UnixTimestamp();
-                EBData.RunExec("UPDATE MutedPlayer SET UnmuteDate = " + now + " WHERE LOWER(Player) = '" + Player.ToLower() + "' AND (UnmuteDate>" + now + " OR UnmuteDate = 0)");
+                if (EBConfig.UseMysql)
+                {
+                    EBData.DBMysql.Query("UPDATE MutedPlayer SET UnmuteDate = @0 WHERE LOWER(Player) = @1 AND (UnmuteDate>@0 OR UnmuteDate = 0)", now, Player.ToLower());
+                }
+                else
+                {
+                    EBData.DBSqlite.Query("UPDATE MutedPlayer SET UnmuteDate = @0 WHERE LOWER(Player) = @1 AND (UnmuteDate>@0 OR UnmuteDate = 0)", now, Player.ToLower());
+                }
                 if (plrs.Count > 0) plrs[0].TSPlayer.SendMessage("You have been unmuted.", Color.Yellow);
                 args.Player.SendMessage(Player + " has been unmuted.", Color.Yellow);
             }

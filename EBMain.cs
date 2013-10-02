@@ -4,10 +4,14 @@ using System.ComponentModel;
 using System.IO;
 using Terraria;
 using TShockAPI;
+using TerrariaApi.Server;
+using TShockAPI.DB;
+using TShockAPI.Net;
+using TShockAPI.Hooks;
 
 namespace ExtendedBans
 {
-	[APIVersion(1, 12)]
+	[ApiVersion(1, 14)]
     public class ExtendedBans : TerrariaPlugin
 	{
         public static string SavePath = "tshock";
@@ -18,7 +22,7 @@ namespace ExtendedBans
         public ExtendedBans(Main game)
             : base(game)
 		{
-            Order = -1;
+            Order = 5;
 		}
 		public override void Initialize()
 		{
@@ -37,11 +41,11 @@ namespace ExtendedBans
             {
                 EBData.InitXBansDB();
                 EBCommands.Load();
-                Hooks.NetHooks.GreetPlayer += OnGreetPlayer;
-                Hooks.ServerHooks.Connect += OnConnect;
-                Hooks.ServerHooks.Join += OnJoin;
-                Hooks.ServerHooks.Leave += OnLeave;
-                Hooks.ServerHooks.Chat += OnChat;
+                ServerApi.Hooks.NetGreetPlayer.Register(this, OnGreetPlayer);
+                ServerApi.Hooks.ServerConnect.Register(this, OnConnect);
+                ServerApi.Hooks.ServerJoin.Register(this, OnJoin);
+                ServerApi.Hooks.ServerLeave.Register(this, OnLeave);
+                ServerApi.Hooks.ServerChat.Register(this, OnChat);
             }
 		}
         protected override void Dispose(bool disposing)
@@ -50,18 +54,18 @@ namespace ExtendedBans
             {
                 if (InitConfig)
                 {
-                    Hooks.NetHooks.GreetPlayer -= OnGreetPlayer;
-                    Hooks.ServerHooks.Connect -= OnConnect;
-                    Hooks.ServerHooks.Join -= OnJoin;
-                    Hooks.ServerHooks.Leave -= OnLeave;
-                    Hooks.ServerHooks.Chat -= OnChat;
+                    ServerApi.Hooks.NetGreetPlayer.Deregister(this, OnGreetPlayer);
+                    ServerApi.Hooks.ServerConnect.Deregister(this, OnConnect);
+                    ServerApi.Hooks.ServerJoin.Deregister(this, OnJoin);
+                    ServerApi.Hooks.ServerLeave.Deregister(this, OnLeave);
+                    ServerApi.Hooks.ServerChat.Deregister(this, OnChat);
                 }
             }
             base.Dispose(disposing);
         }
         public override Version Version
 		{
-			get { return new Version("1.3.0603"); }
+			get { return new Version("1.14.0210"); }
 		}
 		public override string Name
 		{
@@ -76,9 +80,9 @@ namespace ExtendedBans
 			get { return "Extended bans and mute system."; }
 		}
 
-        private void OnConnect(int ply, HandledEventArgs e)
+        private void OnConnect(ConnectEventArgs e)
         {
-            var player = new TSPlayer(ply);
+            var player = new TSPlayer(e.Who);
             if (player == null)
             {
                 e.Handled = true;
@@ -95,9 +99,9 @@ namespace ExtendedBans
             }
         }
 
-        private void OnJoin(int ply, HandledEventArgs e)
+        private void OnJoin(JoinEventArgs e)
         {
-            var player = TShock.Players[ply];
+            var player = TShock.Players[e.Who];
             if (player == null)
             {
                 e.Handled = true;
@@ -114,19 +118,19 @@ namespace ExtendedBans
             }
         }
 
-        public void OnGreetPlayer(int who, HandledEventArgs e)
+        public void OnGreetPlayer(GreetPlayerEventArgs e)
         {
             lock (EBPlayers)
-                EBPlayers.Add(new EBPlayer(who));
+                EBPlayers.Add(new EBPlayer(e.Who));
         }
 
-        public void OnLeave(int whoami)
+        public void OnLeave(LeaveEventArgs e)
         {
             lock (EBPlayers)
             {
                 for (int i = 0; i < EBPlayers.Count; i++)
                 {
-                    if (EBPlayers[i].Index == whoami)
+                    if (EBPlayers[i].Index == e.Who)
                     {
                         EBPlayers.RemoveAt(i);
                         break;
@@ -135,11 +139,12 @@ namespace ExtendedBans
             }
         }
 
-        void OnChat(messageBuffer msg, int ply, string text, HandledEventArgs e)
+        void OnChat(ServerChatEventArgs e)
         {
-            if (!text.StartsWith("/"))
+            string text = e.Text;
+            if (!text.StartsWith("/") || text.StartsWith("/me"))
             {
-                TSPlayer plr = TShock.Players[msg.whoAmI];
+                TSPlayer plr = TShock.Players[e.Who];
                 if(EBUtils.IsPlayerMuted(plr.Name)) {
                     plr.SendMessage("You are muted!", Color.Red);
                     e.Handled = true;

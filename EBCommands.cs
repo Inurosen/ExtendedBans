@@ -9,12 +9,12 @@ namespace ExtendedBans
     {
         internal static void Load()
         {
-            TShockAPI.Commands.ChatCommands.Add(new Command("xbans", DoBanIP, "xbanip"));
-            TShockAPI.Commands.ChatCommands.Add(new Command("xbans", DoBanPlayer, "xban"));
-            TShockAPI.Commands.ChatCommands.Add(new Command("xbans", UnbanIP, "xunbanip"));
-            TShockAPI.Commands.ChatCommands.Add(new Command("xbans", UnbanPlayer, "xunban"));
-            TShockAPI.Commands.ChatCommands.Add(new Command("xmute", DoMute, "xmute"));
-            TShockAPI.Commands.ChatCommands.Add(new Command("xmute", UnMute, "xunmute"));
+            TShockAPI.Commands.ChatCommands.Add(new Command("xbans.admin.banip", DoBanIP, "xbanip"));
+            TShockAPI.Commands.ChatCommands.Add(new Command("xbans.admin.banplayer", DoBanPlayer, "xban"));
+            TShockAPI.Commands.ChatCommands.Add(new Command("xbans.admin.unbanip", UnbanIP, "xunbanip"));
+            TShockAPI.Commands.ChatCommands.Add(new Command("xbans.admin.unbanplayer", UnbanPlayer, "xunban"));
+            TShockAPI.Commands.ChatCommands.Add(new Command("xbans.admin.mute", DoMute, "xmute"));
+            TShockAPI.Commands.ChatCommands.Add(new Command("xbans.admin.unmute", UnMute, "xunmute"));
         }
 
         internal static void DoBanIP(CommandArgs args)
@@ -70,8 +70,8 @@ namespace ExtendedBans
             else
             {
                 args.Player.SendMessage("Extended bans:", Color.Yellow);
-                args.Player.SendMessage("/xban <player> [seconds] <reason>", Color.Yellow);
-                args.Player.SendMessage("/xbanip <ip> [seconds] <reason>", Color.Yellow);
+                args.Player.SendMessage("/xban <player> [time] <reason>", Color.Yellow);
+                args.Player.SendMessage("/xbanip <ip> [time] <reason>", Color.Yellow);
                 args.Player.SendMessage("/xunbanip <ip>", Color.Yellow);
                 args.Player.SendMessage("/xunban <player>", Color.Yellow);
             }
@@ -133,8 +133,8 @@ namespace ExtendedBans
             else
             {
                 args.Player.SendMessage("Extended bans:", Color.Yellow);
-                args.Player.SendMessage("/xban <player> [seconds] <reason>", Color.Yellow);
-                args.Player.SendMessage("/xbanip <ip> [seconds] <reason>", Color.Yellow);
+                args.Player.SendMessage("/xban <player> [time] <reason>", Color.Yellow);
+                args.Player.SendMessage("/xbanip <ip> [time] <reason>", Color.Yellow);
                 args.Player.SendMessage("/xunbanip <ip>", Color.Yellow);
                 args.Player.SendMessage("/xunban <player>", Color.Yellow);
             }
@@ -174,8 +174,8 @@ namespace ExtendedBans
             else
             {
                 args.Player.SendMessage("Extended bans:", Color.Yellow);
-                args.Player.SendMessage("/xban <player> [seconds] <reason>", Color.Yellow);
-                args.Player.SendMessage("/xbanip <ip> [seconds] <reason>", Color.Yellow);
+                args.Player.SendMessage("/xban <player> [time] <reason>", Color.Yellow);
+                args.Player.SendMessage("/xbanip <ip> [time] <reason>", Color.Yellow);
                 args.Player.SendMessage("/xunbanip <ip>", Color.Yellow);
                 args.Player.SendMessage("/xunban <player>", Color.Yellow);
             }
@@ -205,8 +205,8 @@ namespace ExtendedBans
             else
             {
                 args.Player.SendMessage("Extended bans:", Color.Yellow);
-                args.Player.SendMessage("/xban <player> [seconds] <reason>", Color.Yellow);
-                args.Player.SendMessage("/xbanip <ip> [seconds] <reason>", Color.Yellow);
+                args.Player.SendMessage("/xban <player> [time] <reason>", Color.Yellow);
+                args.Player.SendMessage("/xbanip <ip> [time] <reason>", Color.Yellow);
                 args.Player.SendMessage("/xunbanip <ip>", Color.Yellow);
                 args.Player.SendMessage("/xunban <player>", Color.Yellow);
             }
@@ -270,7 +270,7 @@ namespace ExtendedBans
             else
             {
                 args.Player.SendMessage("Extended mute:", Color.Yellow);
-                args.Player.SendMessage("/xmute <player> [seconds] <reason>", Color.Yellow);
+                args.Player.SendMessage("/xmute <player> [time] <reason>", Color.Yellow);
                 args.Player.SendMessage("/xunmute <player>", Color.Yellow);
             }
         }
@@ -313,7 +313,7 @@ namespace ExtendedBans
             else
             {
                 args.Player.SendMessage("Extended mute:", Color.Yellow);
-                args.Player.SendMessage("/xmute <player> [seconds] <reason>", Color.Yellow);
+                args.Player.SendMessage("/xmute <player> [time] <reason>", Color.Yellow);
                 args.Player.SendMessage("/xunmute <player>", Color.Yellow);
             }
         }

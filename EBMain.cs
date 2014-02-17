@@ -11,9 +11,9 @@ using TShockAPI.Hooks;
 
 namespace ExtendedBans
 {
-	[ApiVersion(1, 14)]
+    [ApiVersion(1, 15)]
     public class ExtendedBans : TerrariaPlugin
-	{
+    {
         public static string SavePath = "tshock";
         public static string EBDir = Path.Combine(SavePath, "extendedbans");
         public static List<EBPlayer> EBPlayers = new List<EBPlayer>();
@@ -21,11 +21,11 @@ namespace ExtendedBans
         public static EBConfigFile Cfg = new EBConfigFile();
         public ExtendedBans(Main game)
             : base(game)
-		{
+        {
             Order = 5;
-		}
-		public override void Initialize()
-		{
+        }
+        public override void Initialize()
+        {
             if (!Directory.Exists(EBDir))
                 Directory.CreateDirectory(EBDir);
             if (Cfg.Load())
@@ -47,7 +47,7 @@ namespace ExtendedBans
                 ServerApi.Hooks.ServerLeave.Register(this, OnLeave);
                 ServerApi.Hooks.ServerChat.Register(this, OnChat);
             }
-		}
+        }
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -64,21 +64,21 @@ namespace ExtendedBans
             base.Dispose(disposing);
         }
         public override Version Version
-		{
-			get { return new Version("1.14.0210"); }
-		}
-		public override string Name
-		{
-			get { return "ExtendedBans"; }
-		}
-		public override string Author
-		{
-			get { return "Rosen"; }
-		}
-		public override string Description
-		{
-			get { return "Extended bans and mute system."; }
-		}
+        {
+            get { return new Version("1.14.0210"); }
+        }
+        public override string Name
+        {
+            get { return "ExtendedBans"; }
+        }
+        public override string Author
+        {
+            get { return "Rosen"; }
+        }
+        public override string Description
+        {
+            get { return "Extended bans and mute system."; }
+        }
 
         private void OnConnect(ConnectEventArgs e)
         {
@@ -145,13 +145,14 @@ namespace ExtendedBans
             if (!text.StartsWith("/") || text.StartsWith("/me"))
             {
                 TSPlayer plr = TShock.Players[e.Who];
-                if(EBUtils.IsPlayerMuted(plr.Name)) {
+                if (EBUtils.IsPlayerMuted(plr.Name))
+                {
                     plr.SendMessage("You are muted!", Color.Red);
                     e.Handled = true;
                 }
             }
         }
 
-	}
+    }
 
 }

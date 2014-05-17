@@ -11,7 +11,7 @@ using TShockAPI.Hooks;
 
 namespace ExtendedBans
 {
-    [ApiVersion(1, 15)]
+    [ApiVersion(1, 16)]
     public class ExtendedBans : TerrariaPlugin
     {
         public static string SavePath = "tshock";

@@ -264,8 +264,10 @@ namespace ExtendedBans
                 {
                     EBData.DBSqlite.Query("INSERT INTO MutedPlayer (Player, MuteDate, UnmuteDate, MutedBy, Reason) VALUES (@0, @1, @2, @3, @4)", Player, MuteDate, UnmuteDate, MutedBy, Reason);
                 }
-                if (plrs.Count > 0) plrs[0].TSPlayer.SendMessage("You have been muted: " + Reason, Color.Yellow);
-                args.Player.SendMessage(Player + " has been muted!.", Color.Yellow);
+                if (plrs.Count > 0) {
+                  plrs[0].TSPlayer.SendMessage("You have been muted: " + Reason, Color.Yellow);
+                  TSPlayer.All.SendMessage(Player + " has been muted for: " + Reason, Color.Yellow);
+                }
             }
             else
             {
